@@ -11,7 +11,7 @@
 #include <cmath>
 
 
-#define empty 0
+#define empty 0			//define สำหรับobj
 #define bullet 1
 
 #define keyW sf::Keyboard::isKeyPressed(sf::Keyboard::W)
@@ -26,34 +26,39 @@
 #define keyLeft sf::Keyboard::isKeyPressed(sf::Keyboard::Left)
 #define keyRCtrl sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)
 
-#define normal 1
+#define normal 1		//defineสำหรับโหมดการยิง
 #define spread 2
 #define reflect 3
-const int delayBullet = 5;
-const int delayShootingBullet = 25;
-const int delayTank = 15;
-const int numberOFmap = 336+21;
+const int delayBullet = 5;				//หน่วงเวลากระสุนเคลื่อนที่
+const int delayShootingBullet = 25;		//หน่วงเวลากระสุนให้ยิงรัวได้ช้า
+const int delayTank = 15;				//หน่วงความเร็วการเคลื่อนที่
+const int numberOFmap = 336+21;			//จำนวนบล้อกในmapทั้งหมด
 int countbullet = 0;
-bool playingTankRunSound = false;
+bool playingTankRunSound = false;		//booleanเล่นเสียงขณะรถถังวิ่ง
 //การยิงแบบลูกสะท้อน ยังไม่เสร็จ
 
-sf::RenderWindow windows(sf::VideoMode(1920,1080), "ChiChaTankGame_V2", sf::Style::Fullscreen);		//render window ขนาด 1920x1080
-
+sf::RenderWindow windows(sf::VideoMode(1920,1080), "ChiChaTankGame_V2", sf::Style::Fullscreen);		//render window ขนาด 1920x1080 FullScreen
+//sf::RenderWindow windows(sf::VideoMode(800, 600), "ChiChaTankGame_V2");
+sf::RectangleShape botRec(sf::Vector2f(64, 64));
+int numberOFtank = 7;
+sf::Mutex mutex;
 struct _pos{
 	int x, y;
 }startMapEditor;
 struct _tank
 {
-	int obj;
+	
+	int x, y, dir;
 	int hp;
 	int dmg;
 	int modeShooting;
-	int x, y, dir;
+	int obj;
+	int skin;
 	//hp = health point พลังชีวิตของวัตถุ 
 	//dmg = damage พลังโจมตี
 	//modeShooting = โหมดการยิง
 	//x และ y คือตำแหน่งของวัตถุ ,dir=direction ทิศทาง มี8ทิศ
-}player1,player2,bulle[30];
+}player1,player2,bulle[100],bot[7];
 // player1และplayer2 เก็บตัวรถถัง ,bulle เก็บลูกกระสุน
 
 struct _map
@@ -61,7 +66,7 @@ struct _map
 	//int x, y, hp,obj;
 	int hp, obj;
 }map[numberOFmap+10];
-//map เก็บวัตถุในแผนที่ ,obj คือชนิดวัตถุ
+//map เก็บวัตถุในแผนที่ ,obj คือชนิดวัตถุ,hp เก็บพลังชีวิตของวัตถุ
 struct _posMap
 {
 	int x(int i)
@@ -73,12 +78,13 @@ struct _posMap
 	{
 		return (i / 21) * 64;
 	}
-}getMapPos;
+}getMapPos;//เนื่องจากตำแหน่งของในวัตถุ ไม่ได้กำหนดโดยใช้พิกัด แต่ใช้เป็นarrayแทน
 struct _checkCollision
 {
+	//เช็คชน
 	bool bullets(int i, int j)
 	{
-		
+		//เช็คว่ากระสุนชนกับวัตถุในด่านหรือไม่
 		return !(bulle[j].x - 5 > getMapPos.x(i) + 64
 			|| bulle[j].x + 5 < getMapPos.x(i)
 			|| bulle[j].y - 12 > getMapPos.y(i) + 64
@@ -87,6 +93,8 @@ struct _checkCollision
 
 	bool tank(int no,int dir)
 	{
+		//เช็คว่ารถถังชนวัตถุหรือไม่
+		//โดยเช็คตามทิศที่รถถังหันอยู่
 		if (no == 1)
 		{
 			switch (dir)
@@ -189,13 +197,90 @@ struct _checkCollision
 		}
 
 	}
+
+	bool bots(int no, int dir)
+	{
+		switch (dir)
+		{
+		case 1:
+			for (int i = 0; i < numberOFmap; i++)
+				if (map[i].obj != empty)
+					if (!(bot[no].x - 25 > getMapPos.x(i) + 60
+						|| bot[no].x + 25 < getMapPos.x(i) + 4
+						|| bot[no].y - 3 - 25 > getMapPos.y(i) + 60
+						|| bot[no].y - 3 + 25 < getMapPos.y(i) + 4))
+						return true;
+			return false;
+
+
+		case 2:
+			for (int i = 0; i < numberOFmap; i++)
+				if (map[i].obj != empty)
+					if (!(bot[no].x + 3 - 25 > getMapPos.x(i) + 60
+						|| bot[no].x + 3 + 25 < getMapPos.x(i) + 4
+						|| bot[no].y - 25 > getMapPos.y(i) + 60
+						|| bot[no].y + 25 < getMapPos.y(i) + 4))
+						return true;
+			return false;
+
+
+		case 3:
+			for (int i = 0; i < numberOFmap; i++)
+				if (map[i].obj != empty)
+					if (!(bot[no].x - 25 > getMapPos.x(i) + 60
+						|| bot[no].x + 25 < getMapPos.x(i) + 4
+						|| bot[no].y + 3 - 25 > getMapPos.y(i) + 60
+						|| bot[no].y + 3 + 25 < getMapPos.y(i) + 4))
+						return true;
+			return false;
+
+
+		case 4:
+			for (int i = 0; i < numberOFmap; i++)
+				if (map[i].obj != empty)
+					if (!(bot[no].x - 3 - 25 > getMapPos.x(i) + 60
+						|| bot[no].x - 3 + 25 < getMapPos.x(i) + 4
+						|| bot[no].y - 25 > getMapPos.y(i) + 60
+						|| bot[no].y + 25 < getMapPos.y(i) + 4))
+						return true;
+
+			return false;
+		}
+	}
+
+
+	bool bulletVSplayer1(int i)
+	{
+		return !(bulle[i].x - 5 > player1.x + 25
+			|| bulle[i].x + 5 < player1.x-25
+			|| bulle[i].y - 12 > player1.y + 25
+			|| bulle[i].y + 12 < player1.y-25);
+	}
+
+	bool bulletVSplayer2(int i)
+	{
+		return !(bulle[i].x - 5 > player2.x + 25
+			|| bulle[i].x + 5 < player2.x - 25
+			|| bulle[i].y - 12 > player2.y + 25
+			|| bulle[i].y + 12 < player2.y - 25);
+	}
+	
+	bool bulletVSbot(int i, int j)
+	{
+		return !(bulle[i].x - 5 > bot[j].x + 5
+			|| bulle[i].x + 5 < bot[j].x - 25
+			|| bulle[i].y - 12 > bot[j].y + 25
+			|| bulle[i].y + 12 < bot[j].y - 25);
+	}
+	
 }checkTouch;
+
 void playerControler()
 {
 	//Threadควบคุมตัวรถถังของ2ผู้เล่น
-	sf::SoundBuffer buff[10];	//สร้าง10 sound buffers 
+		//สร้าง10 sound buffers 
 	sf::Sound shoot[10];		//สร้าง10 sounds
-
+	sf::SoundBuffer buff[10];
 	buff[0].loadFromFile("shoot1.wav");
 	buff[1].loadFromFile("shoot2.wav");
 	buff[2].loadFromFile("shoot3.wav");
@@ -206,6 +291,8 @@ void playerControler()
 	buff[7].loadFromFile("shoot8.wav");
 	buff[8].loadFromFile("shoot9.wav");
 	buff[9].loadFromFile("pew.wav");
+
+	
 	//Load ไฟล์เสียงลงbuffer
 
 	for (int i = 0; i < 10; i++)
@@ -223,7 +310,7 @@ void playerControler()
 		{
 			//ถ้ากด W คือplayer1เดินหน้า และให้เล่นเสียงรถถังวิ่ง
 			player1.dir = 1;
-			if (!checkTouch.tank(1, 1))
+			if (!checkTouch.tank(1, 1) )
 			{
 				
 				player1.y -= 3;
@@ -235,7 +322,7 @@ void playerControler()
 		{
 			//ถ้ากดD คือplayer1เดินขวา และให้เล่นเสียงรถถังวิ่ง
 			player1.dir = 2;
-			if (!checkTouch.tank(1,2))
+			if (!checkTouch.tank(1, 2) )
 			{
 				
 				player1.x += 3;
@@ -246,7 +333,7 @@ void playerControler()
 		{
 			//ถ้ากด S คือplayer1เดินขวา และให้เล่นเสียงรถถังวิ่ง
 			player1.dir = 3;
-			if (!checkTouch.tank(1,3)){
+			if (!checkTouch.tank(1, 3) ){
 				
 				player1.y += 3;
 				playingTankRunSound = true;
@@ -256,7 +343,7 @@ void playerControler()
 		{
 			//ถ้ากด A คือplayer1เดินซ้าย และให้เล่นเสียงรถถังวิ่ง
 			player1.dir = 4;
-			if (!checkTouch.tank(1, 4))
+			if (!checkTouch.tank(1, 4) )
 			{
 				
 				player1.x -= 3;
@@ -354,7 +441,7 @@ void playerControler()
 				
 				}
 				
-				if (++countbullet > 30)countbullet = 1;
+				if (++countbullet > 100)countbullet = 1;
 			}
 
 		}
@@ -365,7 +452,7 @@ void playerControler()
 		{
 			//ถ้ากด ลูกศรขึ้น player2จะเดินบน และเล่นเสียงรถถังวิ่ง
 			player2.dir = 1;
-			if (!checkTouch.tank(2, 1))
+			if (!checkTouch.tank(2, 1) )
 			{
 				
 				player2.y -= 3;
@@ -390,7 +477,7 @@ void playerControler()
 		{
 			//ถ้ากด ลูกศรล่าง player2จะเดินล่าง และเล่นเสียงรถถังวิ่ง
 			player2.dir = 3;
-			if (!checkTouch.tank(2, 3))
+			if (!checkTouch.tank(2, 3) )
 			{
 				
 				player2.y += 3;
@@ -403,7 +490,7 @@ void playerControler()
 		{
 			//ถ้ากด ลูกศรซ้าย player2จะเดินซ้าย และเล่นเสียงรถถังวิ่ง
 			player2.dir = 4;
-			if (!checkTouch.tank(2, 4))
+			if (!checkTouch.tank(2, 4) )
 			{
 				
 				player2.x -= 3;
@@ -499,7 +586,7 @@ void playerControler()
 					break;
 
 				}
-				if (++countbullet > 30)countbullet = 1;
+				if (++countbullet > 100)countbullet = 1;
 			}
 		}
 		
@@ -516,7 +603,7 @@ void bulletStimulate()
 	while (1)
 	{
 		//loop ทำงานโดยไล่ตามarray 
-		for (int u = 0; u < 30; u++)
+		for (int u = 0; u < 100; u++)
 		{
 			//ให้ลูกกระสุนเคลื่อนที่ตามทิศทางของแต่ละลูก
 			switch (bulle[u].dir)
@@ -530,7 +617,15 @@ void bulletStimulate()
 				case 7:bulle[u].y += 2; bulle[u].x -= 2; break;
 				case 8:bulle[u].x -= 2; bulle[u].y -= 2; break;*/
 			}
+			if (checkTouch.bulletVSplayer1(u))
+				player1.hp -= bulle[u].dmg;
 
+			if (checkTouch.bulletVSplayer2(u))
+				player2.hp -= bulle[u].dmg;
+
+			for (int i = 0; i < numberOFtank; i++)
+				if (checkTouch.bulletVSbot(u, i))
+					bot[i].hp -= bulle[u].dmg;
 			
 			
 		}
@@ -557,36 +652,61 @@ void playTankSound()
 		}
 	}
 }
-
-void botTank(int numberOFtank,sf::RectangleShape *bot)
+int botDist[7];
+void botTank()
 {
-	int dir,range;
-	while (1)
+	int i,k=0,j=0;
+	
+	for (i = 0; i < numberOFtank; i++)
 	{
-
-		for (int i = 0; i < numberOFtank; i++)
+		
+		while (botDist[i] < 0)
 		{
-			dir = rand() % 4 + 1;
-			switch (dir)
-			{
-			case 1:
-				
-				bot->setPosition(bot->getPosition().x, bot->getPosition().y - 3);
-
-			}
+			botDist[i] = rand() % 500;
+			bot[i].dir = rand() % 4 + 1;
 		}
 			
+		while (checkTouch.bots(i, bot[i].dir))
+			bot[i].dir = rand() % 4 + 1;
 		
+		
+		switch (bot[i].dir)
+		{
+		case 1:bot[i].y -= 5; break;
+		case 2:bot[i].x += 5; break;
+		case 3:bot[i].y += 5; break;
+		case 4:bot[i].x -= 5; break;
+		}
+		botDist[i] -= 5;
+		
+		if (rand() % 43 == 0)
+		{
+			if (countbullet++>28)
+				countbullet = 0;
+
+			bulle[countbullet].obj = bullet;
+			bulle[countbullet].dir = bot[i].dir;
+			bulle[countbullet].x = bot[i].x;
+			bulle[countbullet].y = bot[i].y;
+		}
+		
+
 	}
+	//sf::sleep(sf::milliseconds(delayTank + 7));
+		
+		
+		
+	
 
 }
 
 void createMap(char name[])
 {
-	
+	//functionสร้างแผนที่ โดยรับชื่อแผนที่
 	FILE *mapFile;
 	if (fopen(name, "r") == NULL)
-
+		//ถ้ามีไฟล์ชื่อตามที่รับอยู่แล้ว ให้เขียนทับของเดิม
+		//แต่ถ้ายังไม่มีให้สร้างใหม่และเชียน และวาดกำแพงรอบนอก
 	{
 		mapFile = fopen(name, "a");
 		for (int i = 0; i < numberOFmap; i++)
@@ -609,6 +729,7 @@ void createMap(char name[])
 }
 void readMap(char name[])
 {
+	//อ่านแผนที่ที่เขียนไว้ตามชื่อที่รับมา
 	FILE *mapFile;
 	mapFile = fopen(name, "r");
 	fread(map, sizeof(_map), numberOFmap, mapFile);
@@ -616,94 +737,123 @@ void readMap(char name[])
 }
 void intro()
 {
-	sf::Text text;
-	sf::Font fonttex;
-	fonttex.loadFromFile("consola.ttf");
-	text.setFont(fonttex);
-	text.setCharacterSize(18);
-	text.setColor(sf::Color(sf::Color(0,255,0,32)));
-	sf::Color();
-	//text.setOutlineColor(sf::Color(0,255,0,255));
+	//intro เป็นอักษรภาษาอังกฤษและตัวเลข วิ่งลงมาตามแนวดิ่ง โดยอักษรที่วิ่งจะถูกสุ่มเรื่อยๆ 
+	//intro จะคล้ายๆในหนัง Matrix
+	sf::Music twd;
+	twd.openFromFile("TWD.wav");
+	twd.play();
+	twd.setLoop(true);
+	sf::Text text;					//สร้างTextชื่อtext
+	sf::Font fonttex;				//สร้างตัวแปรเก็บfont
+	fonttex.loadFromFile("consola.ttf");	//load font
+	text.setFont(fonttex);			//เซ็ตfontลงtext
+	text.setCharacterSize(18);		//ปรับขนาดอักษร
 	
 	std::string str ="" ;
+
+	sf::Text nameGame,press;		
+	sf::Font csFont;
+	csFont.loadFromFile("cs_regular.ttf");
+	nameGame.setFont(csFont);
+	nameGame.setCharacterSize(104);
+	nameGame.setColor(sf::Color::White);		//setสีขาว
+	nameGame.setString("ChiChaTankGame_V2");
+	press.setFont(csFont);
+	press.setCharacterSize(52);
+	press.setString("Press Space to Continue");
+	
+	nameGame.setPosition(1920 / 2-525, 1080/2 - 300);		//เซ็ตตำแหน่งของคำว่า ChiChaTankGame_V2 บนหน้าจอ
+	press.setPosition(1920 / 2-300, 1080 / 2 + 250);		//เซ็ตตำแหน่งของคำว่า Press Space to Continue บนหน้าจอ
+
 	int move = 7, whereX[200],whereY[200],i;
+
+	//ใช้whereXและwhereYแทนพิกัดของตัวอักษรที่วิ่งลงมา
+	// move ใช้กำหนดระยะวิ่งลงของอักษร 7pixels
 	for (int i = 0; i < 200; i++)
 	{
+		//สุ่มตำแหน่ง
 		whereX[i] = rand() % 1920;
 		whereY[i] = rand() % 1080;
 	}
-	int randomLength = rand() % (1080 / move);
 	unsigned int run = 0;
-	while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
 		windows.clear();
-		
+		//อักษรจะวิ่งลงมา 8ตัวอักษรในแต่ละแถว โดยสีจะค่อยๆจาง
 		for (int j = 0; j < 200; j++)
 		{
 			for (int k = 0; k < 8; k++)
 			{
+				//วิ่งลงมา8อักษร สุ่มอักษรใหม่ด้วย
 				if (rand() % 2 == 0)
 					str = rand() % 26 + 65;
 				else
 					str = rand() % 10 + 48;
 
 				text.setString(str);
-				/*if (j % 3 == 0)
-					text.setColor(sf::Color(0, 255, 0, 255 - k * 32));
-				else if (j % 3 == 1)
-					text.setColor(sf::Color(0, 255, 255, 255 - k * 32));
-				else
-					text.setColor(sf::Color(255, 255, 255, 255 - k * 32));*/
-				text.setColor(sf::Color(255, 255, 255, 255 - k * 32));
-				text.setPosition(whereX[j], whereY[j]-k*20);
+				text.setColor(sf::Color(0, 255, 0, 255 - k * 32));	//สีเขียว ลดความเข้มสีตามระยะห่างของอักษร
+				if (j % 17 == 0)
+					text.setColor(sf::Color(0, 255, 255, 255 - k * 32));	//สีฟ้า
+				else if (j % 19 == 0)
+					text.setColor(sf::Color(255, 255, 255, 255 - k * 32));	//สีขาว
+				
+				text.setPosition(whereX[j], whereY[j]-k*20);	//เซ็ตตำแหน่ง 
 				windows.draw(text);
 			}
-			whereY[j] += move;
+			whereY[j] += move;	//อักษรวิ่งลง
 			if (whereY[j]>1080+8*20)
 			{
+				//ถ้าอักษรวิ่งลงสุดจอแล้วให้สุ่มจุดใหม่
 				whereX[j] = rand() % 1920;
 				whereY[j] = 0;
 			}
 		}
-		sf::sleep(sf::milliseconds(20));
+		windows.draw(nameGame);	//วาดชื่อเกม
+		run++;
+		
+		if (run % 8 <6)windows.draw(press);	
+		sf::sleep(sf::milliseconds(20));	//หน่วงเวลา
+
 		windows.display();
-
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+			exit(0);
+		
 	}
-	exit(-1);
-		
-		
-		
 	
-	
-	
-
-
+	//exit(NULL);
 }
 int main()
 {
-	
+	for (int i = 0; i < 7; i++)
+	{
+		bot[i].dir = rand() % 4 + 1;
+		botDist[i] = rand() % 500;
+	}
+
 	windows.setFramerateLimit(80);
-	unsigned short int i = 0,s=0;
+	unsigned short int i = 0, s = 0;
 	srand(time(NULL));
-	intro();
-	sf::Vector2i mouse,mouse2;
-	
+	intro();		//intro ก่อนเข้าเกม	
+	sf::Vector2i mouse, mouse2;		//ใช้เก็บพิกัดmouse
+
 	glEnable(GL_TEXTURE_2D);		//เปิดใช้openGL
 	srand(time(NULL));
-	
+
 	sf::Thread playerControler_Thread(&playerControler);			//สร้างThread ควบคุมรถถัง
 	playerControler_Thread.launch();								//สั่งThread ทำงาน
 
 	sf::Thread bulletThread(&bulletStimulate);						//สร้างThread ยิงกระสุน
 	bulletThread.launch();											//สั่งThread ทำงาน
-	
+
 	sf::Thread TankSound_Thread(&playTankSound);					//สร้างThread เล่นเสียงรถถัง
 	TankSound_Thread.launch();										//สั่งThread ทำงาน
-	
+
+	//sf::Thread botTank_Thread(&botTank);
+	//botTank_Thread.launch();
 
 
-	player1.x = 1440 / 2; player1.y = 1080 / 2;					
-	player2.x = 1440 / 2; player2.y = 1080 / 2 + 32*5;
+	player1.x = 1440 / 2; player1.y = 1080 / 2;
+	player2.x = 1440 / 2; player2.y = 1080 / 2 + 32 * 5;
 	player1.modeShooting = normal; player2.modeShooting = normal;
 
 
@@ -718,20 +868,24 @@ int main()
 	player2Rec.setOrigin(player2Rec.getSize().x / 2, player2Rec.getSize().y / 2);		//set จุดกำเนิดของสี่ยงเหลื่ยม
 	player2Rec.setScale(2, 2);				//set ขนาดเป็น2เท่า
 
-	sf::RectangleShape botRec(sf::Vector2f(64, 64));
+
 	sf::Texture botTex[7][8];
 	botRec.setOrigin(botRec.getSize().x / 2, botRec.getSize().y / 2);
 	for (int i = 0; i < 7; i++)
 		for (int j = 0; j < 8; j++)
 			botTex[i][j].loadFromFile("MulticolorTanks.png", sf::IntRect(i * 32, j * 32, 32, 32));
-
+	for (int i = 0; i < 7; i++)
+	{
+		bot[i].x = rand() % 800 + 400;
+		bot[i].y = rand() % 500 + 85;
+	}
 
 	sf::RectangleShape bulletS(sf::Vector2f(32, 32));				//สร้างสี่เหลื่ยมกระสุน
 	sf::Texture bulletTex;											//สร้างTexture
 	bulletTex.loadFromFile("tiles.png", sf::IntRect(9 * 32, 0, 32, 32));	//Load Texture จากไฟล์
 	bulletS.setTexture(&bulletTex);				//set Texture กับกระสุน
 	bulletS.setOrigin(bulletS.getSize().x / 2, bulletS.getSize().y / 2);		//set จุดกำเนิด
-	
+
 
 
 	sf::RectangleShape mapEditor(sf::Vector2f(32, 32));
@@ -739,48 +893,61 @@ int main()
 	sf::RectangleShape mapS(sf::Vector2f(64, 64));
 	sf::Texture mapTex[6][12];
 
-	for (int u = 0; u < 6; u++) 
+	for (int u = 0; u < 6; u++)
 		for (int v = 0; v < 12; v++)
 			mapTex[u][v].loadFromFile("tiles.png", sf::IntRect(v * 32, (u + 1) * 32, 31, 32));
-	int mapEditorObj=11;
-	
+	int mapEditorObj = 11;
+
 	//Load Texture จากไฟล์
 	for (i = 0; i < 7; i++)
 	{
-		player1Tex[i].loadFromFile("tiles.png", sf::IntRect((15 + i) * 32-1, 0, 32, 32));
+		player1Tex[i].loadFromFile("tiles.png", sf::IntRect((15 + i) * 32 - 1, 0, 32, 32));
 		if (i != 0)
 			player2Tex[i - 1].loadFromFile("tiles.png", sf::IntRect((15 + i) * 32, 9 * 32, 32, 32));
 	}
-	player2Tex[6].loadFromFile("tiles.png", sf::IntRect((15+6) * 32, 9 * 32, 32, 32));
-	
-	
-	
-	
+	player2Tex[6].loadFromFile("tiles.png", sf::IntRect((15 + 6) * 32, 9 * 32, 32, 32));
 
-	
+
+
+
+
+
 	std::string posOfmouse;
 	sf::Text pixel;
 	sf::Font testFont;
 	testFont.loadFromFile("SuperMario256.ttf");
 	pixel.setFont(testFont);
 	pixel.setCharacterSize(32);
-	pixel.setPosition(1700, 1080/2);
+	pixel.setPosition(1700, 1080 / 2);
 	pixel.setColor(sf::Color::White);
-	
 
-	//createMap("testMap.txt");
+
+
 	readMap("Hi.txt");
-	
 
+	player1.dmg = 1;
+	player1.hp = 1;
+	player1.obj = normal;
+	player2.dmg = 1;
+	player2.hp = 1;
+	player2.obj = normal;
+	for (int i = 0; i < numberOFtank; i++)
+	{
+		bot[i].obj = normal;
+		bot[i].dmg = 1;
+		bot[i].hp = 1;
+	}
 
 	while (1)
 	{
 		
 		windows.clear();			//Clear window
 		//draw map
+	
 		for (int ob = 0; ob < numberOFmap; ob++)
 			if (map[ob].obj != 42 && map[ob].obj != 43 && map[ob].obj != 72 && map[ob].obj != empty)
 			{
+				//วา
 				mapS.setTexture(&mapTex[map[ob].obj / 12][map[ob].obj % 12 - 1]);
 				mapS.setPosition(getMapPos.x(ob), getMapPos.y(ob));
 				windows.draw(mapS);
@@ -792,43 +959,66 @@ int main()
 			player2Rec.setTexture(&player2Tex[s]);
 			if (++s > 6)s = 0;
 		}
-		
+		if (i % 2 == 0)botTank();
 		//draw tank1
-		switch (player1.dir)
+		if (player1.obj != empty && player1.hp>0)
 		{
-			//หมุนรถถังเป็นองศาตามทิศทาง
+			switch (player1.dir)
+			{
+				//หมุนรถถังเป็นองศาตามทิศทาง
 			case 1:player1Rec.setRotation(0); break;
 			case 2:player1Rec.setRotation(90); break;
 			case 3:player1Rec.setRotation(180); break;
 			case 4:player1Rec.setRotation(270); break;
-			case 5:player1Rec.setRotation(45); break;
-			case 6:player1Rec.setRotation(135); break;
-			case 7:player1Rec.setRotation(225); break;
-			case 8:player1Rec.setRotation(315); break;
-		}
 
-		player1Rec.setPosition(player1.x, player1.y);		//กำหนดตำแหน่งรถถังplayer1
-		windows.draw(player1Rec);							//วาดรถถังplayer1ตามตำแหน่งและทิศทาง
+			}
+
+			player1Rec.setPosition(player1.x, player1.y);		//กำหนดตำแหน่งรถถังplayer1
+			windows.draw(player1Rec);							//วาดรถถังplayer1ตามตำแหน่งและทิศทาง
+
+		}
 		
 		
 		//draw tank2
-		switch (player2.dir)
+		if (player2.obj != empty && player2.hp>0)
 		{
-			//หมุนรถถังเป็นองศาตามทิศทาง
+			switch (player2.dir)
+			{
+				//หมุนรถถังเป็นองศาตามทิศทาง
 			case 1:player2Rec.setRotation(0); break;
 			case 2:player2Rec.setRotation(90); break;
 			case 3:player2Rec.setRotation(180); break;
 			case 4:player2Rec.setRotation(270); break;
-			case 5:player2Rec.setRotation(45); break;
-			case 6:player2Rec.setRotation(135); break;
-			case 7:player2Rec.setRotation(225); break;
-			case 8:player2Rec.setRotation(315); break;
+
+			}
+			player2Rec.setPosition(player2.x, player2.y);		//กำหนดตำแหน่งรถถังplayer2
+			windows.draw(player2Rec);							//วาดรถถังplayer2ตามตำแหน่งและทิศทาง
 		}
-		player2Rec.setPosition(player2.x, player2.y);		//กำหนดตำแหน่งรถถังplayer2
-		windows.draw(player2Rec);							//วาดรถถังplayer2ตามตำแหน่งและทิศทาง
+		
 			
+		for (int ii = 0; ii < numberOFtank; ii++)
+		{
+			if (bot[ii].obj != empty && bot[ii].hp>0)
+			{
+				switch (bot[ii].dir)
+				{
+					//หมุนรถถังเป็นองศาตามทิศทาง
+				case 1:botRec.setRotation(270); break;
+				case 2:botRec.setRotation(0); break;
+				case 3:botRec.setRotation(90); break;
+				case 4:botRec.setRotation(180); break;
+				}
+
+				botRec.setPosition(bot[ii].x, bot[ii].y);		//กำหนดตำแหน่งรถถังbot
+				botRec.setTexture(&botTex[s][ii]);
+				windows.draw(botRec);
+			}
+			
+		}//วาดรถถังbotตามตำแหน่งและทิศทาง
+
+
 		//draw bullet
-		for (int y = 0; y < 30; y++)
+		for (int y = 0; y < 100; y++)
 		{
 			if (bulle[y].obj == bullet){
 				switch (bulle[y].dir)
@@ -846,7 +1036,7 @@ int main()
 							bulle[y].obj = empty;
 			}
 			
-			bulletS.setPosition(bulle[y].x, bulle[y].y);	//กำกนดตำแหน่งกระสุน
+			bulletS.setPosition(bulle[y].x, bulle[y].y);	//กำหนดตำแหน่งกระสุน
 			if (bulle[y].obj == bullet)
 				windows.draw(bulletS);						//วาดกระสุน
 											
@@ -866,7 +1056,7 @@ int main()
 			if ((mouse.x > startMapEditor.x + (32 + 5) * 5 && mouse.x < startMapEditor.x + (32 + 5) * 7
 				&& mouse.y>startMapEditor.y + (32 + 5) * 3 && mouse.y < startMapEditor.y + (32 + 5) * 4))
 			{
-
+				
 				while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
 					windows.clear();

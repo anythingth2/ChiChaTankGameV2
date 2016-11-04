@@ -1,45 +1,45 @@
-﻿Build started 28/10/2559 19:41:50.
+﻿Build started 2/11/2559 0:17:41.
      1>Project "C:\Users\ChiChaChai\Documents\Computer Programming\ChiChaTankGame_V2\ChiChaTankGame_V2\ChiChaTankGame_V2.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\SFML-2.4.0\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ChiChaTankGame_V2.cpp
          ChiChaTankGame_V2.cpp
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(707): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(697): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdio.h(211) : see declaration of 'fopen'
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(711): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(701): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdio.h(211) : see declaration of 'fopen'
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(726): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(716): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdio.h(211) : see declaration of 'fopen'
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(734): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(725): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdio.h(211) : see declaration of 'fopen'
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(759): warning C4996: 'sf::Text::setColor': was declared deprecated
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(751): warning C4996: 'sf::Text::setColor': was declared deprecated
                  c:\program files (x86)\microsoft visual studio 12.0\vc\sfml-2.4.0\include\sfml\graphics\text.hpp(177) : see declaration of 'sf::Text::setColor'
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(794): warning C4996: 'sf::Text::setColor': was declared deprecated
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(786): warning C4996: 'sf::Text::setColor': was declared deprecated
                  c:\program files (x86)\microsoft visual studio 12.0\vc\sfml-2.4.0\include\sfml\graphics\text.hpp(177) : see declaration of 'sf::Text::setColor'
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(796): warning C4996: 'sf::Text::setColor': was declared deprecated
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(788): warning C4996: 'sf::Text::setColor': was declared deprecated
                  c:\program files (x86)\microsoft visual studio 12.0\vc\sfml-2.4.0\include\sfml\graphics\text.hpp(177) : see declaration of 'sf::Text::setColor'
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(798): warning C4996: 'sf::Text::setColor': was declared deprecated
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(790): warning C4996: 'sf::Text::setColor': was declared deprecated
                  c:\program files (x86)\microsoft visual studio 12.0\vc\sfml-2.4.0\include\sfml\graphics\text.hpp(177) : see declaration of 'sf::Text::setColor'
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(800): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(768): warning C4101: 'i' : unreferenced local variable
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(835): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(840): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(922): warning C4996: 'sf::Text::setColor': was declared deprecated
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(792): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(760): warning C4101: 'i' : unreferenced local variable
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(832): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(837): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(932): warning C4996: 'sf::Text::setColor': was declared deprecated
                  c:\program files (x86)\microsoft visual studio 12.0\vc\sfml-2.4.0\include\sfml\graphics\text.hpp(177) : see declaration of 'sf::Text::setColor'
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(952): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(955): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(934) : definition of 'i' ignored
-                 c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(834) : definition of 'i' used
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(962): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(934) : definition of 'i' ignored
-                 c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(834) : definition of 'i' used
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(976): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(994): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(1012): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(1039): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(1071): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(1098): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(249): warning C4715: '_checkCollision::bots' : not all control paths return a value
-     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(199): warning C4715: '_checkCollision::tank' : not all control paths return a value
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(968): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(971): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
+                 c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(951) : definition of 'i' ignored
+                 c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(831) : definition of 'i' used
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(992): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(1010): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(1033): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
+                 c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(1014) : definition of 'i' ignored
+                 c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(831) : definition of 'i' used
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(1047): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(1074): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(1106): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(1133): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(254): warning C4715: '_checkCollision::bots' : not all control paths return a value
+     1>c:\users\chichachai\documents\computer programming\chichatankgame_v2\chichatankgame_v2\chichatankgame_v2.cpp(204): warning C4715: '_checkCollision::tank' : not all control paths return a value
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\ChiChaChai\Documents\Computer Programming\ChiChaTankGame_V2\Debug\ChiChaTankGame_V2.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\SFML-2.4.0\lib" "sfml-graphics-d.lib" "sfml-window-d.lib" "sfml-system-d.lib" "sfml-audio-d.lib" opengl32.lib winmm.lib gdi32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\ChiChaChai\Documents\Computer Programming\ChiChaTankGame_V2\Debug\ChiChaTankGame_V2.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\ChiChaChai\Documents\Computer Programming\ChiChaTankGame_V2\Debug\ChiChaTankGame_V2.lib" /MACHINE:X86 Debug\ChiChaTankGame_V2.obj
          Debug\stdafx.obj
@@ -48,4 +48,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.29
+Time Elapsed 00:00:01.36

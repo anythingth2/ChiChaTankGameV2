@@ -40,7 +40,7 @@ bool playingTankRunSound = false;		//booleanเล่นเสียงขณะรถถังวิ่ง
 sf::RenderWindow windows(sf::VideoMode(1920,1080), "ChiChaTankGame_V2", sf::Style::Fullscreen);		//render window ขนาด 1920x1080 FullScreen
 //sf::RenderWindow windows(sf::VideoMode(800, 600), "ChiChaTankGame_V2");
 sf::RectangleShape botRec(sf::Vector2f(64, 64));
-int numberOFtank = 7;
+int numberOFtank = 5;
 sf::Mutex mutex;
 struct _pos{
 	int x, y;
@@ -85,10 +85,15 @@ struct _checkCollision
 	bool bullets(int i, int j)
 	{
 		//เช็คว่ากระสุนชนกับวัตถุในด่านหรือไม่
-		return !(bulle[j].x - 5 > getMapPos.x(i) + 64
+		if (map[i].obj<28 && !(bulle[j].x - 5 > getMapPos.x(i) + 64
 			|| bulle[j].x + 5 < getMapPos.x(i)
 			|| bulle[j].y - 12 > getMapPos.y(i) + 64
-			|| bulle[j].y + 12 < getMapPos.y(i));
+			|| bulle[j].y + 12 < getMapPos.y(i)) &&map[i].hp>0)
+		{
+			map[i].hp -= bulle[j].dmg;
+			return true;
+		}
+		else return false;
 	}
 
 	bool tank(int no,int dir)
@@ -101,7 +106,7 @@ struct _checkCollision
 			{
 			case 1:
 				for (int i = 0; i < numberOFmap; i++)
-					if (map[i].obj != empty)
+					if (map[i].obj != empty&& map[i].obj<28)
 						if (!(player1.x - 25 > getMapPos.x(i) + 60
 							|| player1.x + 25 < getMapPos.x(i)+4
 							|| player1.y - 3 - 25 > getMapPos.y(i) + 60
@@ -112,7 +117,7 @@ struct _checkCollision
 
 			case 2:
 				for (int i = 0; i < numberOFmap; i++)
-					if (map[i].obj != empty)
+					if (map[i].obj != empty&& map[i].obj<28)
 						if (!(player1.x + 3 - 25 > getMapPos.x(i) + 60
 							|| player1.x + 3 +25 < getMapPos.x(i)+4
 							|| player1.y - 25 > getMapPos.y(i) + 60
@@ -123,7 +128,7 @@ struct _checkCollision
 
 			case 3:
 				for (int i = 0; i < numberOFmap; i++)
-					if (map[i].obj != empty)
+					if (map[i].obj != empty&& map[i].obj<28)
 						if (!(player1.x - 25 > getMapPos.x(i) + 60
 							|| player1.x + 25 < getMapPos.x(i)+4
 							|| player1.y + 3 - 25 > getMapPos.y(i) + 60
@@ -134,7 +139,7 @@ struct _checkCollision
 
 			case 4:
 				for (int i = 0; i < numberOFmap; i++)
-					if (map[i].obj != empty)
+					if (map[i].obj != empty&& map[i].obj<28)
 						if (!(player1.x - 3 - 25 > getMapPos.x(i) + 60
 							|| player1.x - 3 + 25 < getMapPos.x(i)+4
 							|| player1.y - 25 > getMapPos.y(i) + 60
@@ -151,7 +156,7 @@ struct _checkCollision
 			{
 			case 1:
 				for (int i = 0; i < numberOFmap; i++)
-					if (map[i].obj != empty)
+					if (map[i].obj != empty&& map[i].obj<28)
 						if (!(player2.x - 25 > getMapPos.x(i) + 60
 							|| player2.x + 25 < getMapPos.x(i)+4
 							|| player2.y - 3 - 25 > getMapPos.y(i) + 60
@@ -162,7 +167,7 @@ struct _checkCollision
 
 			case 2:
 				for (int i = 0; i < numberOFmap; i++)
-					if (map[i].obj != empty)
+					if (map[i].obj != empty&& map[i].obj<28)
 						if (!(player2.x + 3 - 25 > getMapPos.x(i) + 60
 							|| player2.x + 3 + 25 < getMapPos.x(i)+4
 							|| player2.y - 25 > getMapPos.y(i) + 60
@@ -173,7 +178,7 @@ struct _checkCollision
 
 			case 3:
 				for (int i = 0; i < numberOFmap; i++)
-					if (map[i].obj != empty)
+					if (map[i].obj != empty&& map[i].obj<28)
 						if (!(player2.x - 25 > getMapPos.x(i) + 60
 							|| player2.x + 25 < getMapPos.x(i)+4
 							|| player2.y + 3 - 25 > getMapPos.y(i) + 60
@@ -184,7 +189,7 @@ struct _checkCollision
 
 			case 4:
 				for (int i = 0; i < numberOFmap; i++)
-					if (map[i].obj != empty)
+					if (map[i].obj != empty&& map[i].obj<28)
 						if (!(player2.x - 3 - 25 > getMapPos.x(i) + 60
 							|| player2.x - 3 + 25 < getMapPos.x(i)+4
 							|| player2.y - 25 > getMapPos.y(i) + 60
@@ -204,7 +209,7 @@ struct _checkCollision
 		{
 		case 1:
 			for (int i = 0; i < numberOFmap; i++)
-				if (map[i].obj != empty)
+				if (map[i].obj != empty&& map[i].obj<28)
 					if (!(bot[no].x - 25 > getMapPos.x(i) + 60
 						|| bot[no].x + 25 < getMapPos.x(i) + 4
 						|| bot[no].y - 3 - 25 > getMapPos.y(i) + 60
@@ -215,7 +220,7 @@ struct _checkCollision
 
 		case 2:
 			for (int i = 0; i < numberOFmap; i++)
-				if (map[i].obj != empty)
+				if (map[i].obj != empty&& map[i].obj<28)
 					if (!(bot[no].x + 3 - 25 > getMapPos.x(i) + 60
 						|| bot[no].x + 3 + 25 < getMapPos.x(i) + 4
 						|| bot[no].y - 25 > getMapPos.y(i) + 60
@@ -226,7 +231,7 @@ struct _checkCollision
 
 		case 3:
 			for (int i = 0; i < numberOFmap; i++)
-				if (map[i].obj != empty)
+				if (map[i].obj != empty && map[i].obj<28)
 					if (!(bot[no].x - 25 > getMapPos.x(i) + 60
 						|| bot[no].x + 25 < getMapPos.x(i) + 4
 						|| bot[no].y + 3 - 25 > getMapPos.y(i) + 60
@@ -237,7 +242,7 @@ struct _checkCollision
 
 		case 4:
 			for (int i = 0; i < numberOFmap; i++)
-				if (map[i].obj != empty)
+				if (map[i].obj != empty&& map[i].obj<28)
 					if (!(bot[no].x - 3 - 25 > getMapPos.x(i) + 60
 						|| bot[no].x - 3 + 25 < getMapPos.x(i) + 4
 						|| bot[no].y - 25 > getMapPos.y(i) + 60
@@ -306,7 +311,7 @@ void playerControler()
 		playingTankRunSound = false;
 
 		//player1
-		if (keyW && !(keyD || keyA || keyS))
+		if (keyW && !(keyD || keyA || keyS) && player1.hp>0)
 		{
 			//ถ้ากด W คือplayer1เดินหน้า และให้เล่นเสียงรถถังวิ่ง
 			player1.dir = 1;
@@ -318,7 +323,7 @@ void playerControler()
 			}
 			
 		}
-		if (keyD && !(keyW || keyA || keyS))
+		if (keyD && !(keyW || keyA || keyS) && player1.hp > 0)
 		{
 			//ถ้ากดD คือplayer1เดินขวา และให้เล่นเสียงรถถังวิ่ง
 			player1.dir = 2;
@@ -329,7 +334,7 @@ void playerControler()
 				playingTankRunSound = true;
 			}
 		}
-		if (keyS && !(keyD || keyA || keyW))
+		if (keyS && !(keyD || keyA || keyW) && player1.hp > 0)
 		{
 			//ถ้ากด S คือplayer1เดินขวา และให้เล่นเสียงรถถังวิ่ง
 			player1.dir = 3;
@@ -339,7 +344,7 @@ void playerControler()
 				playingTankRunSound = true;
 			}
 		}
-		if (keyA && !(keyD || keyW || keyS))
+		if (keyA && !(keyD || keyW || keyS) && player1.hp > 0)
 		{
 			//ถ้ากด A คือplayer1เดินซ้าย และให้เล่นเสียงรถถังวิ่ง
 			player1.dir = 4;
@@ -351,39 +356,8 @@ void playerControler()
 			}
 			
 		}
-		//if (keyW && keyD && !(keyS || keyA))
-		//{
-		//	//ถ้ากด W และ D คือplayer1เดินเฉียงบนขวา และให้เล่นเสียงรถถังวิ่ง
-		//	player1.dir = 5;
-		//	player1.x += 2; player1.y -= 2;
-		//	playingTankRunSound = true;
-
-		//}
-		//if (keyS && keyD && !(keyA || keyW))
-		//{
-		//	//ถ้ากด D และ S คือplayer1เดินเฉียงล่างขวาและให้เล่นเสียงรถถังวิ่ง
-		//	player1.dir = 6;
-		//	player1.x += 2; player1.y += 2;
-		//	playingTankRunSound = true;
-
-		//}
-		//if (keyS && keyA && !(keyW || keyD))
-		//{
-		//	//ถ้ากด S และ A คือplayer1เดินเฉียงล่างซ้าย และให้เล่นเสียงรถถังวิ่ง
-		//	player1.dir = 7;
-		//	player1.x -= 2; player1.y += 2;
-		//	playingTankRunSound = true;
-
-		//}
-		//if (keyW && keyA && !(keyS || keyD))
-		//{
-		//	//ถ้ากด A และ W คือplayer1เดินเฉียงบนซ้าย และให้เล่นเสียงรถถังวิ่ง
-		//	player1.dir = 8;
-		//	player1.x -= 2; player1.y -= 2;
-		//	playingTankRunSound = true;
-
-		//}
-		if (keySpace)
+	
+		if (keySpace && player1.hp > 0)
 		{
 			//กด Space player1ยิง โดยสุ่มเสียงของกระสุนจากเสียงทั้ง10เสียง
 			//ใช้การmodในการหน่วงความเร็วกระสุน
@@ -393,7 +367,15 @@ void playerControler()
 				switch (player1.modeShooting)
 				{
 				case normal:
+					
 					bulle[countbullet++] = player1;
+					switch (player1.dir)
+					{
+					case 1:bulle[countbullet - 1].y -= 48; break;
+					case 2:bulle[countbullet - 1].x += 48; break;
+					case 3:bulle[countbullet - 1].y += 48; break;
+					case 4:bulle[countbullet - 1].x -= 48; break;
+					}
 					bulle[countbullet - 1].obj = bullet; break;
 				case spread:
 					bulle[countbullet++] = player1;
@@ -448,7 +430,7 @@ void playerControler()
 
 
 		//player2
-		if (keyUp && !(keyRight || keyDown || keyLeft))
+		if (keyUp && !(keyRight || keyDown || keyLeft) && player2.hp > 0)
 		{
 			//ถ้ากด ลูกศรขึ้น player2จะเดินบน และเล่นเสียงรถถังวิ่ง
 			player2.dir = 1;
@@ -460,7 +442,7 @@ void playerControler()
 			}
 
 		}
-		if (keyRight && !(keyUp || keyLeft || keyDown))
+		if (keyRight && !(keyUp || keyLeft || keyDown) && player2.hp > 0)
 		{
 			//ถ้ากด ลูกศรขวา player2จะเดินขวา และเล่นเสียงรถถังวิ่ง
 			player2.dir = 2;
@@ -473,7 +455,7 @@ void playerControler()
 			
 
 		}
-		if (keyDown && !(keyRight || keyLeft || keyUp))
+		if (keyDown && !(keyRight || keyLeft || keyUp) && player2.hp > 0)
 		{
 			//ถ้ากด ลูกศรล่าง player2จะเดินล่าง และเล่นเสียงรถถังวิ่ง
 			player2.dir = 3;
@@ -486,7 +468,7 @@ void playerControler()
 			
 
 		}
-		if (keyLeft && !(keyRight || keyUp || keyDown))
+		if (keyLeft && !(keyRight || keyUp || keyDown) && player2.hp > 0)
 		{
 			//ถ้ากด ลูกศรซ้าย player2จะเดินซ้าย และเล่นเสียงรถถังวิ่ง
 			player2.dir = 4;
@@ -498,39 +480,8 @@ void playerControler()
 			}
 
 		}
-		//if (keyUp && keyRight && !(keyDown || keyLeft))
-		//{
-		//	//ถ้ากด ลูกศรขึ้น และ ลูกศรขวา player2จะเดินเฉียงบนขวา และเล่นเสียงรถถังวิ่ง
-		//	player2.dir = 5;
-		//	player2.x += 2; player2.y -= 2;
-		//	playingTankRunSound = true;
-
-		//}
-		//if (keyDown && keyRight && !(keyLeft || keyUp))
-		//{
-		//	//ถ้ากด ลูกศรล่าง และ ลูกศรขวา player2จะเดินเฉียงล่างขวา และเล่นเสียงรถถังวิ่ง
-		//	player2.dir = 6;
-		//	player2.x += 2; player2.y += 2;
-		//	playingTankRunSound = true;
-
-		//}
-		//if (keyDown && keyLeft && !(keyUp || keyRight))
-		//{
-		//	//ถ้ากด ลูกศรล่าง และ ลูกศรซ้าย player2จะเดินเฉียงล่างซ้าย และเล่นเสียงรถถังวิ่ง
-		//	player2.dir = 7;
-		//	player2.x -= 2; player2.y += 2;
-		//	playingTankRunSound = true;
-
-		//}
-		//if (keyUp && keyLeft && !(keyRight || keyDown))
-		//{
-		//	//ถ้ากด ลูกศรขึ้น และ ลูกศรซ้าย player2จะเดินเฉียงบนซ้าย และเล่นเสียงรถถังวิ่ง
-		//	player2.dir = 8;
-		//	player2.x -= 2; player2.y -= 2;
-		//	playingTankRunSound = true;
-
-		//}
-		if (keyRCtrl)
+	
+		if (keyRCtrl && player2.hp > 0)
 		{
 			//กด RightControl player2ยิงกระสุน
 			//ใช้การmodในการหน่วงความเร็วกระสุน
@@ -540,7 +491,15 @@ void playerControler()
 				switch (player2.modeShooting)
 				{
 				case normal:
-					bulle[countbullet++] = player2; bulle[countbullet - 1].obj = bullet; break;
+					bulle[countbullet++] = player2;
+					switch (player2.dir)
+					{
+					case 1:bulle[countbullet - 1].y -= 48; break;
+					case 2:bulle[countbullet - 1].x += 48; break;
+					case 3:bulle[countbullet - 1].y += 48; break;
+					case 4:bulle[countbullet - 1].x -= 48; break;
+					}
+					bulle[countbullet - 1].obj = bullet; break;
 				case spread:
 					bulle[countbullet++] = player2;
 					bulle[countbullet - 1].obj = bullet;
@@ -618,15 +577,28 @@ void bulletStimulate()
 				case 8:bulle[u].x -= 2; bulle[u].y -= 2; break;*/
 			}
 			if (checkTouch.bulletVSplayer1(u))
+			{
 				player1.hp -= bulle[u].dmg;
+				bulle[u].obj = empty;
+			
+			}
+			//	
 
 			if (checkTouch.bulletVSplayer2(u))
+			{
 				player2.hp -= bulle[u].dmg;
+				bulle[u].obj = empty;
+			}
 
-			for (int i = 0; i < numberOFtank; i++)
-				if (checkTouch.bulletVSbot(u, i))
-					bot[i].hp -= bulle[u].dmg;
-			
+			//for (int i = 0; i < numberOFtank; i++)
+			//	if (checkTouch.bulletVSbot(u, i))
+			//	{
+			//		bot[i].hp -= bulle[u].dmg;
+			//		//bulle[u].obj = empty;
+			//		bulle[u].x = 0;
+			//		bulle[u].y = 0;
+			//	}
+			//
 			
 		}
 		sf::sleep(sf::milliseconds(delayBullet));	//หน่วงเวลาลูกกระสุน
@@ -655,19 +627,30 @@ void playTankSound()
 int botDist[7];
 void botTank()
 {
-	int i,k=0,j=0;
+	int i,k=0,j=0,countGoAway=0;
 	
 	for (i = 0; i < numberOFtank; i++)
 	{
 		
 		while (botDist[i] < 0)
 		{
+			
 			botDist[i] = rand() % 500;
 			bot[i].dir = rand() % 4 + 1;
 		}
 			
 		while (checkTouch.bots(i, bot[i].dir))
+		{
 			bot[i].dir = rand() % 4 + 1;
+			if (countGoAway++>10)
+			{
+				countGoAway = 0; 
+				if (rand() % 2 == 1)
+					bot[i].x += 64;
+				else
+					bot[i].y += 64;
+			}
+		}
 		
 		
 		switch (bot[i].dir)
@@ -688,6 +671,13 @@ void botTank()
 			bulle[countbullet].dir = bot[i].dir;
 			bulle[countbullet].x = bot[i].x;
 			bulle[countbullet].y = bot[i].y;
+			switch (bot[i].dir)
+			{
+			case 1:bulle[countbullet - 1].y -= 48; break;
+			case 2:bulle[countbullet - 1].x += 48; break;
+			case 3:bulle[countbullet - 1].y += 48; break;
+			case 4:bulle[countbullet - 1].x -= 48; break;
+			}
 		}
 		
 
@@ -724,6 +714,7 @@ void createMap(char name[])
 	}
 	else
 		mapFile = fopen(name, "w");
+		
 	fwrite(map, sizeof(_map), numberOFmap, mapFile);
 	fclose(mapFile);
 }
@@ -734,6 +725,7 @@ void readMap(char name[])
 	mapFile = fopen(name, "r");
 	fread(map, sizeof(_map), numberOFmap, mapFile);
 	fclose(mapFile);
+	std::cout << "read map DONE!" << std::endl;
 }
 void intro()
 {
@@ -819,9 +811,14 @@ void intro()
 			exit(0);
 		
 	}
-	
+	std::cout << "Intro End" << std::endl;
 	//exit(NULL);
 }
+
+
+	
+
+
 int main()
 {
 	for (int i = 0; i < 7; i++)
@@ -848,6 +845,7 @@ int main()
 	sf::Thread TankSound_Thread(&playTankSound);					//สร้างThread เล่นเสียงรถถัง
 	TankSound_Thread.launch();										//สั่งThread ทำงาน
 
+	
 	//sf::Thread botTank_Thread(&botTank);
 	//botTank_Thread.launch();
 
@@ -871,6 +869,13 @@ int main()
 
 	sf::Texture botTex[7][8];
 	botRec.setOrigin(botRec.getSize().x / 2, botRec.getSize().y / 2);
+
+	sf::Texture explTex[3];
+	for (int i = 0; i < 3; i++)
+		explTex[i].loadFromFile("tiles.png", sf::IntRect(i*32, 0, 32, 32));
+
+	
+		
 	for (int i = 0; i < 7; i++)
 		for (int j = 0; j < 8; j++)
 			botTex[i][j].loadFromFile("MulticolorTanks.png", sf::IntRect(i * 32, j * 32, 32, 32));
@@ -878,6 +883,11 @@ int main()
 	{
 		bot[i].x = rand() % 800 + 400;
 		bot[i].y = rand() % 500 + 85;
+		/*do
+		{
+			bot[i].x = rand() % 800 + 400;
+			bot[i].y = rand() % 500 + 85;
+		} while (checkTouch.bots(i, 1));*/
 	}
 
 	sf::RectangleShape bulletS(sf::Vector2f(32, 32));				//สร้างสี่เหลื่ยมกระสุน
@@ -922,30 +932,36 @@ int main()
 	pixel.setColor(sf::Color::White);
 
 
-
+	//createMap("Hi.txt");
 	readMap("Hi.txt");
 
 	player1.dmg = 1;
-	player1.hp = 1;
+	player1.hp = 7;
 	player1.obj = normal;
 	player2.dmg = 1;
-	player2.hp = 1;
+	player2.hp = 7;
 	player2.obj = normal;
+
 	for (int i = 0; i < numberOFtank; i++)
 	{
 		bot[i].obj = normal;
 		bot[i].dmg = 1;
 		bot[i].hp = 1;
 	}
+	for (int i = 0; i < numberOFmap; i++)
+		map[i].hp = 5;
 
+	bool player1isDied = false;
+	int countExplTex[9] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	std::cout << "Start running game" << std::endl;
 	while (1)
 	{
 		
 		windows.clear();			//Clear window
 		//draw map
-	
+		
 		for (int ob = 0; ob < numberOFmap; ob++)
-			if (map[ob].obj != 42 && map[ob].obj != 43 && map[ob].obj != 72 && map[ob].obj != empty)
+			if (map[ob].obj != 42 && map[ob].obj != 43 && map[ob].obj != 72 && map[ob].obj != empty&&map[ob].hp>0)
 			{
 				//วา
 				mapS.setTexture(&mapTex[map[ob].obj / 12][map[ob].obj % 12 - 1]);
@@ -959,7 +975,7 @@ int main()
 			player2Rec.setTexture(&player2Tex[s]);
 			if (++s > 6)s = 0;
 		}
-		if (i % 2 == 0)botTank();
+		
 		//draw tank1
 		if (player1.obj != empty && player1.hp>0)
 		{
@@ -995,7 +1011,26 @@ int main()
 			windows.draw(player2Rec);							//วาดรถถังplayer2ตามตำแหน่งและทิศทาง
 		}
 		
-			
+		for (int i = 0; i < 9; i++)
+			if (countExplTex[i] != 0 && countExplTex[i] < 7 )
+			{ 
+				if (i <= 1)
+				{
+					if (i == 0)
+						if (countExplTex[i] <= 3)
+							player1Rec.setTexture(&explTex[countExplTex[i]-1]);
+						else
+							player1Rec.setTexture(&explTex[6-countExplTex[i]]);
+					else
+						if (countExplTex[i] <= 3)
+							player2Rec.setTexture(&explTex[countExplTex[i] - 1]);
+						else
+							player2Rec.setTexture(&explTex[6 - countExplTex[i]]);
+				}
+				
+				
+			}
+		if (i % 2 == 0)botTank();
 		for (int ii = 0; ii < numberOFtank; ii++)
 		{
 			if (bot[ii].obj != empty && bot[ii].hp>0)

@@ -42,11 +42,12 @@ int numberOFtank = 4;
 int scoreTank[2] = { 0, 0 };
 int bossPos;
 int botTankremain = 50;
+int botTarget[7];
 bool playingTankRunSound = false;		//booleanเล่นเสียงขณะรถถังวิ่ง
 //การยิงแบบลูกสะท้อน ยังไม่เสร็จ
 
-//sf::RenderWindow windows(sf::VideoMode(1920,1080), "ChiChaTankGame_V2", sf::Style::Fullscreen);		//render window ขนาด 1920x1080 FullScreen
-sf::RenderWindow windows(sf::VideoMode(800, 600), "ChiChaTankGame_V2");
+sf::RenderWindow windows(sf::VideoMode(1920,1080), "ChiChaTankGame_V2", sf::Style::Fullscreen);		//render window ขนาด 1920x1080 FullScreen
+//sf::RenderWindow windows(sf::VideoMode(800, 600), "ChiChaTankGame_V2");
 sf::RectangleShape botRec(sf::Vector2f(64, 64));
 
 sf::Mutex mutex;
@@ -306,6 +307,8 @@ struct _spawn
 {
 	void Bot(int x)
 	{
+		
+		botTarget[x] = rand() % 2;
 		botTankremain--;
 		bot[x].obj = normal;
 		bot[x].hp = 1;
@@ -347,16 +350,16 @@ void playerControler()
 		//สร้าง10 sound buffers 
 	sf::Sound shoot[10];		//สร้าง10 sounds
 	sf::SoundBuffer buff[10];
-	buff[0].loadFromFile("shoot1.wav");
-	buff[1].loadFromFile("shoot2.wav");
-	buff[2].loadFromFile("shoot3.wav");
-	buff[3].loadFromFile("shoot4.wav");
-	buff[4].loadFromFile("shoot5.wav");
-	buff[5].loadFromFile("shoot6.wav");
-	buff[6].loadFromFile("shoot7.wav");
-	buff[7].loadFromFile("shoot8.wav");
-	buff[8].loadFromFile("shoot9.wav");
-	buff[9].loadFromFile("pew.wav");
+	buff[0].loadFromFile("bin/shoot1.wav");
+	buff[1].loadFromFile("bin/shoot2.wav");
+	buff[2].loadFromFile("bin/shoot3.wav");
+	buff[3].loadFromFile("bin/shoot4.wav");
+	buff[4].loadFromFile("bin/shoot5.wav");
+	buff[5].loadFromFile("bin/shoot6.wav");
+	buff[6].loadFromFile("bin/shoot7.wav");
+	buff[7].loadFromFile("bin/shoot8.wav");
+	buff[8].loadFromFile("bin/shoot9.wav");
+	buff[9].loadFromFile("bin/pew.wav");
 
 	
 	//Load ไฟล์เสียงลงbuffer
@@ -417,6 +420,7 @@ void playerControler()
 			}
 			
 		}
+
 		if (keySpace && player1.hp <= 0)spawn.Player1();
 		if (keySpace && player1.hp > 0)
 		{
@@ -622,7 +626,7 @@ void bulletStimulate()
 {
 	sf::Sound impact;
 	sf::SoundBuffer impactBuff;
-	impactBuff.loadFromFile("impact.wav");
+	impactBuff.loadFromFile("bin/impact.wav");
 	impact.setBuffer(impactBuff);
 
 	while (1)
@@ -681,7 +685,7 @@ void playTankSound()
 	//Thread เล่นเสียงรถถัง
 	sf::SoundBuffer tankRunBuf;			//สร้าง buffer soundของรถถัง
 	sf::Sound tankRun;					//สร้าง sound รถถัง
-	tankRunBuf.loadFromFile("tank_sound.wav");		//Loadเสียงรถถัง
+	tankRunBuf.loadFromFile("bin/tank_sound.wav");		//Loadเสียงรถถัง
 	tankRun.setBuffer(tankRunBuf);					//set เสียงรรถถัง
 
 
@@ -738,30 +742,12 @@ int AI(int i)
 	
 	
 	
-	if (sqrt(pow((bot[i].x - player1.x), 2) + pow((bot[i].y - player1.y), 2)) < rangeRadarBot
-		&& sqrt(pow((bot[i].x - player1.x), 2) + pow((bot[i].y - player1.y), 2)) < dist_nearest)
-	{
-		dist_nearest = sqrt(pow((bot[i].x - player1.x), 2) + pow((bot[i].y - player1.y), 2));
-		who = 1;
-	}
+	
 
-	if (sqrt(pow((bot[i].x - player2.x), 2) + pow((bot[i].y - player2.y), 2)) < rangeRadarBot
-		&& sqrt(pow((bot[i].x - player2.x), 2) + pow((bot[i].y - player2.y), 2)) < dist_nearest)
-	{
-		dist_nearest = sqrt(pow((bot[i].x - player2.x), 2) + pow((bot[i].y - player2.y), 2));
-		who = 2;
-	}
 
-	if (sqrt(pow((bot[i].x - getMapPos.x(numberOFmap - 31)), 2) + pow((bot[i].y - getMapPos.y(numberOFmap - 31)), 2)) < rangeRadarBot
-		&& sqrt(pow((bot[i].x - getMapPos.x(numberOFmap - 31)), 2) + pow((bot[i].y - getMapPos.y(numberOFmap - 31)), 2)) < dist_nearest)
+	switch (botTarget[i])
 	{
-		dist_nearest = sqrt(pow((bot[i].x - getMapPos.x(numberOFmap - 31)), 2) + pow((bot[i].y - getMapPos.y(numberOFmap - 31)), 2));
-		who = 3;
-	}
-
-	switch (who)
-	{
-	case 1:
+	case 0:
 		if (sqrt(pow((bot[i].x - player1.x), 2) + pow((bot[i].y - player1.y), 2)) < rangeRadarBot)
 		{
 			bit += 1;
@@ -771,7 +757,7 @@ int AI(int i)
 			if (bot[i].x < player1.x && bot[i].y < player1.x)dir = 4;
 		}
 		break;
-	case 2:
+	case 1:
 		if (sqrt(pow((bot[i].x - player2.x), 2) + pow((bot[i].y - player2.y), 2)) < rangeRadarBot)
 		{
 			
@@ -782,25 +768,14 @@ int AI(int i)
 			
 		}
 		break;
-	case 3:
-		if (sqrt(pow((bot[i].x - getMapPos.x(numberOFmap - 31)), 2) + pow((bot[i].y - getMapPos.y(numberOFmap - 31)), 2)) < rangeRadarBot)
-		{
-			
-			if (bot[i].x > getMapPos.x(numberOFmap - 31) && bot[i].y < getMapPos.y(numberOFmap - 31))dir = 1;
-			if (bot[i].x > getMapPos.x(numberOFmap - 31) && bot[i].y > getMapPos.y(numberOFmap - 31))dir = 2;
-			if (bot[i].x < getMapPos.x(numberOFmap - 31) && bot[i].y > getMapPos.y(numberOFmap - 31))dir = 3;
-			if (bot[i].x < getMapPos.x(numberOFmap - 31) && bot[i].y < getMapPos.y(numberOFmap - 31))dir = 4;
-		}
-		break;
-	default:return 0;
 	}
 	
 	int prob[12];
 	switch (dir)
 	{
-	case 3:for (int i = 0; i < 5; i++){ prob[i] = 1; prob[i + 5] = 2; }prob[10] = 3; prob[11] = 4; break;
+	case 1:for (int i = 0; i < 5; i++){ prob[i] = 1; prob[i + 5] = 2; }prob[10] = 3; prob[11] = 4; break;
 	case 2:for (int i = 0; i < 5; i++){ prob[i] = 2; prob[i + 5] = 3; }prob[10] = 1; prob[11] = 4; break;
-	case 1:for (int i = 0; i < 5; i++){ prob[i] = 3; prob[i + 5] = 4; }prob[10] = 1; prob[11] = 2; break;
+	case 3:for (int i = 0; i < 5; i++){ prob[i] = 3; prob[i + 5] = 4; }prob[10] = 1; prob[11] = 2; break;
 	case 4:for (int i = 0; i < 5; i++){ prob[i] = 1; prob[i + 5] = 4; }prob[10] = 2; prob[11] = 3; break;
 	}
 
@@ -914,12 +889,12 @@ void intro()
 	//intro เป็นอักษรภาษาอังกฤษและตัวเลข วิ่งลงมาตามแนวดิ่ง โดยอักษรที่วิ่งจะถูกสุ่มเรื่อยๆ 
 	//intro จะคล้ายๆในหนัง Matrix
 	sf::Music twd;
-	twd.openFromFile("TWD.wav");
+	twd.openFromFile("bin/TWD.wav");
 	twd.play();
 	twd.setLoop(true);
 	sf::Text text;					//สร้างTextชื่อtext
 	sf::Font fonttex;				//สร้างตัวแปรเก็บfont
-	fonttex.loadFromFile("consola.ttf");	//load font
+	fonttex.loadFromFile("bin/consola.ttf");	//load font
 	text.setFont(fonttex);			//เซ็ตfontลงtext
 	text.setCharacterSize(18);		//ปรับขนาดอักษร
 	
@@ -927,7 +902,7 @@ void intro()
 
 	sf::Text nameGame,press;		
 	sf::Font csFont;
-	csFont.loadFromFile("cs_regular.ttf");
+	csFont.loadFromFile("bin/cs_regular.ttf");
 	nameGame.setFont(csFont);
 	nameGame.setCharacterSize(104);
 	nameGame.setColor(sf::Color::White);		//setสีขาว
@@ -950,10 +925,15 @@ void intro()
 		whereY[i] = rand() % 1080;
 	}
 	unsigned int run = 0;
+
+	sf::Event respondmeplz;
+
 	while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
 		windows.clear();
 		//อักษรจะวิ่งลงมา 8ตัวอักษรในแต่ละแถว โดยสีจะค่อยๆจาง
+		windows.pollEvent(respondmeplz);
+
 		for (int j = 0; j < 200; j++)
 		{
 			for (int k = 0; k < 8; k++)
@@ -986,7 +966,7 @@ void intro()
 		run++;
 		
 		if (run % 8 <6)windows.draw(press);	
-		sf::sleep(sf::milliseconds(20));	//หน่วงเวลา
+		sf::sleep(sf::milliseconds(40));	//หน่วงเวลา
 
 		windows.display();
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -1018,7 +998,7 @@ int main()
 		bot[i].dir = rand() % 4 + 1;
 		botDist[i] = rand() % 500;
 	}
-	
+
 	windows.setFramerateLimit(80);
 	unsigned short int i = 0, s = 0;
 	srand(time(NULL));
@@ -1037,7 +1017,7 @@ int main()
 	sf::Thread TankSound_Thread(&playTankSound);					//สร้างThread เล่นเสียงรถถัง
 	TankSound_Thread.launch();										//สั่งThread ทำงาน
 
-	
+
 	//sf::Thread botTank_Thread(&botTank);
 	//botTank_Thread.launch();
 
@@ -1064,18 +1044,18 @@ int main()
 
 	sf::Texture explTex[3];
 	for (int i = 0; i < 3; i++)
-		explTex[i].loadFromFile("tiles.png", sf::IntRect(i*32, 0, 32, 32));
+		explTex[i].loadFromFile("bin/tiles.png", sf::IntRect(i * 32, 0, 32, 32));
 
-	
-		
+
+
 	for (int i = 0; i < 7; i++)
 		for (int j = 0; j < 8; j++)
-			botTex[i][j].loadFromFile("MulticolorTanks.png", sf::IntRect(i * 32, j * 32, 32, 32));
-	
+			botTex[i][j].loadFromFile("bin/MulticolorTanks.png", sf::IntRect(i * 32, j * 32, 32, 32));
+
 
 	sf::RectangleShape bulletS(sf::Vector2f(32, 32));				//สร้างสี่เหลื่ยมกระสุน
 	sf::Texture bulletTex;											//สร้างTexture
-	bulletTex.loadFromFile("tiles.png", sf::IntRect(9 * 32, 0, 32, 32));	//Load Texture จากไฟล์
+	bulletTex.loadFromFile("bin/tiles.png", sf::IntRect(9 * 32, 0, 32, 32));	//Load Texture จากไฟล์
 	bulletS.setTexture(&bulletTex);				//set Texture กับกระสุน
 	bulletS.setOrigin(bulletS.getSize().x / 2, bulletS.getSize().y / 2);		//set จุดกำเนิด
 
@@ -1086,32 +1066,32 @@ int main()
 	startMapEditor.x = 500; startMapEditor.y = 500;
 	sf::RectangleShape mapS(sf::Vector2f(64, 64));
 	sf::Texture mapTex[6][12];
-
+	
 	for (int u = 0; u < 6; u++)
 		for (int v = 0; v < 12; v++)
-			mapTex[u][v].loadFromFile("tiles.png", sf::IntRect(v * 32, (u + 1) * 32, 31, 32));
+			mapTex[u][v].loadFromFile("bin/tiles.png", sf::IntRect(v * 32, (u + 1) * 32, 31, 32));
 	int mapEditorObj = 11;
 
 	//Load Texture จากไฟล์
 	for (i = 0; i < 7; i++)
 	{
-		player1Tex[i].loadFromFile("tiles.png", sf::IntRect((15 + i) * 32 - 1, 0, 32, 32));
+		player1Tex[i].loadFromFile("bin/tiles.png", sf::IntRect((15 + i) * 32 - 1, 0, 32, 32));
 		if (i != 0)
-			player2Tex[i - 1].loadFromFile("tiles.png", sf::IntRect((15 + i) * 32, 9 * 32, 32, 32));
+			player2Tex[i - 1].loadFromFile("bin/tiles.png", sf::IntRect((15 + i) * 32, 9 * 32, 32, 32));
 	}
-	player2Tex[6].loadFromFile("tiles.png", sf::IntRect((15 + 6) * 32, 9 * 32, 32, 32));
+	player2Tex[6].loadFromFile("bin/tiles.png", sf::IntRect((15 + 6) * 32, 9 * 32, 32, 32));
 
-	sf::RectangleShape heart(sf::Vector2f(40, 40)), retank(sf::Vector2f(40,40)), retank2(sf::Vector2f(40,40));
+	sf::RectangleShape heart(sf::Vector2f(40, 40)), retank(sf::Vector2f(40, 40)), retank2(sf::Vector2f(40, 40));
 	sf::RectangleShape logo(sf::Vector2f(128, 128)), logo2(sf::Vector2f(128, 128));
 
 	sf::Texture heartTex;
-	heartTex.loadFromFile("heart.png");
+	heartTex.loadFromFile("bin/heart.png");
 	heart.setTexture(&heartTex);
 	retank.setTexture(&player1Tex[0]); retank2.setTexture(&player2Tex[0]);
-	sf::Text name, kmitlno, life, remaintank,life2,remaintank2,pointtext,scoretext,remainbotTankText,remainbot;
+	sf::Text name, kmitlno, life, remaintank, life2, remaintank2, pointtext, scoretext, remainbotTankText, remainbot;
 	std::string score;
 	sf::Font cs;
-	cs.loadFromFile("cs_regular.ttf");
+	cs.loadFromFile("bin/cs_regular.ttf");
 	name.setFont(cs); kmitlno.setFont(cs); life.setFont(cs); remaintank.setFont(cs); life2.setFont(cs); remaintank2.setFont(cs); pointtext.setFont(cs); scoretext.setFont(cs), remainbotTankText.setFont(cs), remainbot.setFont(cs);
 	name.setString("ChatChai ShaeTan"); kmitlno.setString("59010240"); life.setString("Life ->"); remaintank.setString("Tank ->"); life2.setString("Life ->"); remaintank2.setString("Tank ->"); pointtext.setString("Points");
 	remainbotTankText.setString("Remaining Bot ->"); remainbotTankText.setPosition(10, 1080 - 100);
@@ -1120,15 +1100,18 @@ int main()
 	life.setPosition(25, 300); life2.setPosition(1920 - 300, 300); remaintank.setPosition(25, 700); remaintank2.setPosition(1920 - 300, 700);
 	logo.setPosition(50, 150); logo2.setPosition(1920 - 240, 150);
 
-	sf::Text win,lose;
+	sf::Text win, lose;
 	win.setFont(cs); lose.setFont(cs);
 	win.setString("YOU WIN!!!"); lose.setString("You Lose");
-	win.setPosition(1920 / 2 - 300, 1080 / 2-100); lose.setPosition(1920 / 2 - 300, 1080 / 2-100);
+	win.setPosition(1920 / 2 - 300, 1080 / 2 - 100); lose.setPosition(1920 / 2 - 300, 1080 / 2 - 100);
 	win.setOutlineColor(sf::Color::Black); lose.setOutlineColor(sf::Color::Black);
 	win.setOutlineThickness(1.5); lose.setOutlineThickness(1.5);
 	win.setScale(4, 4); lose.setScale(4, 4);
 	//createMap("Hi.txt");
-	readMap("Hi.txt");
+	readMap("bin/Hi.txt");
+	
+	sf::Event events;
+
 
 	player1.dmg = 1;
 	player1.hp = 3;
@@ -1295,47 +1278,73 @@ int main()
 		
 		
 		//draw mouse position
-		mouse = sf::Mouse::getPosition(windows);
-		
-		
-		//map editor
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)){ switchmapEditor++; while (sf::Keyboard::isKeyPressed(sf::Keyboard::P)); }
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && switchmapEditor%2==1){
-			if ((mouse.x > startMapEditor.x + (32 + 5) * 5 && mouse.x < startMapEditor.x + (32 + 5) * 7
-				&& mouse.y>startMapEditor.y + (32 + 5) * 3 && mouse.y < startMapEditor.y + (32 + 5) * 4))
-			{
-				
-				while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-				{
-					windows.clear();
-					mouse = sf::Mouse::getPosition(windows);
-					startMapEditor.x = mouse.x - (32 + 5) * 6;
-					startMapEditor.y = mouse.y - (32 + 5) * 4 + 16;
-					for (int u = 0; u < 6; u++)
-					{
-						for (int v = 0; v < 12; v++)
-						{
-							mapEditor.setTexture(&mapTex[u][v]);
-							mapEditor.setPosition(startMapEditor.x + v* (32 + 5), startMapEditor.y + u* (32 + 5));
-							windows.draw(mapEditor);
-						}
-					}
-					windows.display();
-				}
-				windows.clear();
-			}
-			else
-			{
-				for (int i = 0; i < 72; i++)
-					if (mouse.x>startMapEditor.x + i % 12 * (32 + 5) && mouse.x<startMapEditor.x + i % 12 * (32 + 5) + 32
-						&& mouse.y>startMapEditor.y + (i / 12) * (32 + 5) && mouse.y < startMapEditor.y + (i / 12) * (32 + 5) + 32)
-					{
-						mapEditorObj = i + 1;
-						break;
-					}
+		windows.pollEvent(events);
+		if (events.type == sf::Event::MouseButtonPressed){
+			mouse = sf::Mouse::getPosition(windows);
 
+
+			//map editor
+			
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && switchmapEditor % 2 == 1){
+				if ((mouse.x > startMapEditor.x + (32 + 5) * 5 && mouse.x < startMapEditor.x + (32 + 5) * 7
+					&& mouse.y>startMapEditor.y + (32 + 5) * 3 && mouse.y < startMapEditor.y + (32 + 5) * 4))
+				{
+
+					while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+					{
+						windows.clear();
+						mouse = sf::Mouse::getPosition(windows);
+						startMapEditor.x = mouse.x - (32 + 5) * 6;
+						startMapEditor.y = mouse.y - (32 + 5) * 4 + 16;
+						for (int u = 0; u < 6; u++)
+						{
+							for (int v = 0; v < 12; v++)
+							{
+								mapEditor.setTexture(&mapTex[u][v]);
+								mapEditor.setPosition(startMapEditor.x + v* (32 + 5), startMapEditor.y + u* (32 + 5));
+								windows.draw(mapEditor);
+							}
+						}
+						windows.display();
+					}
+					windows.clear();
+				}
+				else
+				{
+					for (int i = 0; i < 72; i++)
+						if (mouse.x>startMapEditor.x + i % 12 * (32 + 5) && mouse.x<startMapEditor.x + i % 12 * (32 + 5) + 32
+							&& mouse.y>startMapEditor.y + (i / 12) * (32 + 5) && mouse.y < startMapEditor.y + (i / 12) * (32 + 5) + 32)
+						{
+							mapEditorObj = i + 1;
+							break;
+						}
+
+				}
 			}
+			//create block of map from mapEditor
+			for (int u = 0; u < 15; u++)
+				for (int v = 0; v < 19; v++)
+				{
+					if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+					{
+						mouse = sf::Mouse::getPosition();
+						if (303 + v * 64 < mouse.x && 303 + v * 64 + 64 > mouse.x
+							&& 64 + u * 64 < mouse.y && 64 + u * 64 + 64 > mouse.y)
+
+							map[v + 1 + (u + 1) * 21].obj = mapEditorObj;
+					}
+					if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+					{
+						mouse = sf::Mouse::getPosition();
+						if (303 + v * 64 < mouse.x && 303 + v * 64 + 64 > mouse.x
+							&& 64 + u * 64 < mouse.y && 64 + u * 64 + 64 > mouse.y)
+
+							map[v + 1 + (u + 1) * 21].obj = empty;
+					}
+				}
 		}
+		
 			
 		//draw mapEditor
 		if (switchmapEditor % 2 == 1)
@@ -1348,27 +1357,7 @@ int main()
 				}
 		
 
-		//create block of map from mapEditor
-		for (int u = 0; u < 15; u++)
-			for (int v = 0; v < 19; v++)
-			{
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-				{
-					mouse = sf::Mouse::getPosition();
-					if (303 + v * 64 < mouse.x && 303 + v * 64 + 64 > mouse.x
-						&& 64 + u * 64 < mouse.y && 64 + u * 64 + 64 > mouse.y)
-
-						map[v +1 + (u+1 ) * 21].obj = mapEditorObj;
-				}
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-				{
-					mouse = sf::Mouse::getPosition();
-					if (303 + v * 64 < mouse.x && 303 + v * 64 + 64 > mouse.x
-						&& 64 + u * 64 < mouse.y && 64 + u * 64 + 64 > mouse.y)
-
-						map[v + 1 + (u + 1) * 21].obj = empty;
-				}
-			}
+		
 		if (readyTank[0] < 0 && readyTank[1] < 0 )
 		{
 			playerControler_Thread.terminate();
@@ -1390,7 +1379,7 @@ int main()
 		
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 		{
-			//createMap("Hi.txt");
+			//createMap("bin/Hi.txt");
 			exit(-1);
 		}
 		sf::sleep(sf::microseconds(1));

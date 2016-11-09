@@ -12,3 +12,5 @@ This game is part of assignment of Computer Programming 1 subject.
   use space key and Rctrl for shoot bullet. Control your tank and destroy your enemys.
   
   
+  ChiChaTankGameV2 is developed by C++ lanuguage and SFML library.
+  

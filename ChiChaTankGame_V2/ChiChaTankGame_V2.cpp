@@ -43,6 +43,7 @@ int scoreTank[2] = { 0, 0 };
 int bossPos;
 int botTankremain = 50;
 int botTarget[7];
+sf::Time botTimingDelay = sf::milliseconds(500);
 bool playingTankRunSound = false;		//booleanเล่นเสียงขณะรถถังวิ่ง
 //การยิงแบบลูกสะท้อน ยังไม่เสร็จ
 
@@ -51,6 +52,8 @@ sf::RenderWindow windows(sf::VideoMode(1920,1080), "ChiChaTankGame_V2", sf::Styl
 sf::RectangleShape botRec(sf::Vector2f(64, 64));
 
 sf::Mutex mutex;
+sf::Clock timing;
+sf::Time botShootTiming[7];
 struct _pos{
 	int x, y;
 }startMapEditor;
@@ -748,42 +751,96 @@ int AI(int i)
 	switch (botTarget[i])
 	{
 	case 0:
-		if (sqrt(pow((bot[i].x - player1.x), 2) + pow((bot[i].y - player1.y), 2)) < rangeRadarBot)
-		{
-			bit += 1;
-			if (bot[i].x > player1.x && bot[i].y < player1.x)dir = 1;
-			if (bot[i].x > player1.x && bot[i].y > player1.x)dir = 2;
-			if (bot[i].x < player1.x && bot[i].y > player1.x)dir = 3;
-			if (bot[i].x < player1.x && bot[i].y < player1.x)dir = 4;
-		}
+		if (bot[i].x > player1.x && bot[i].y < player1.y)dir = 1;
+		if (bot[i].x > player1.x && bot[i].y > player1.y)dir = 2;
+		if (bot[i].x < player1.x && bot[i].y > player1.y)dir = 3;
+		if (bot[i].x < player1.x && bot[i].y < player1.y)dir = 4;
 		break;
 	case 1:
-		if (sqrt(pow((bot[i].x - player2.x), 2) + pow((bot[i].y - player2.y), 2)) < rangeRadarBot)
-		{
-			
-			if (bot[i].x > player2.x && bot[i].y < player2.x)dir = 1;
-			if (bot[i].x > player2.x && bot[i].y > player2.x)dir = 2;
-			if (bot[i].x < player2.x && bot[i].y > player2.x)dir = 3;
-			if (bot[i].x < player2.x && bot[i].y < player2.x)dir = 4;
-			
-		}
+		if (bot[i].x > player2.x && bot[i].y < player2.y)dir = 1;
+		if (bot[i].x > player2.x && bot[i].y > player2.y)dir = 2;
+		if (bot[i].x < player2.x && bot[i].y > player2.y)dir = 3;
+		if (bot[i].x < player2.x && bot[i].y < player2.y)dir = 4;
 		break;
 	}
-	
-	int prob[12];
+	int prob = rand() % 100;
 	switch (dir)
 	{
-	case 1:for (int i = 0; i < 5; i++){ prob[i] = 1; prob[i + 5] = 2; }prob[10] = 3; prob[11] = 4; break;
-	case 2:for (int i = 0; i < 5; i++){ prob[i] = 2; prob[i + 5] = 3; }prob[10] = 1; prob[11] = 4; break;
-	case 3:for (int i = 0; i < 5; i++){ prob[i] = 3; prob[i + 5] = 4; }prob[10] = 1; prob[11] = 2; break;
-	case 4:for (int i = 0; i < 5; i++){ prob[i] = 1; prob[i + 5] = 4; }prob[10] = 2; prob[11] = 3; break;
+	case 1:
+		if (prob < 10)return 1;
+		else if (prob < 20)return 2;
+		else if (prob < 60)return 3;
+		else return 4;
+		break;
+	case 2:
+		if (prob < 10)return 2;
+		else if (prob < 20)return 3;
+		else if (prob < 60)return 1;
+		else return 4;
+		break;
+	case 3:
+		if (prob < 10)return 3;
+		else if (prob < 20)return 4;
+		else if (prob < 60)return 1;
+		else return 2;
+		break;
+	case 4:
+		if (prob < 10)return 1;
+		else if (prob < 20)return 4;
+		else if (prob < 60)return 2;
+		else return 3;
+		break;
 	}
 
-	return prob[rand() % 12];
 	
+	
+}
+bool checkPlayerFrontBot(int x)
+{
+	if (rand() % 2 == 1)return 0;
+	switch (bot[x].dir)
+	{
+	case 1:
+		if (bot[x].x + 48 > player1.x && bot[x].x - 48 < player1.x && bot[x].y > player1.y)
+			return 1;
+		if (bot[x].x + 48 > player2.x && bot[x].x - 48 < player2.x && bot[x].y > player2.y)
+			return 1;
+		break;
+	case 2:
+		if (bot[x].y + 48 > player1.y && bot[x].y - 48 < player1.y && bot[x].x < player1.x)
+			return 1;
+		if (bot[x].y + 48 > player2.y && bot[x].y - 48 < player2.y && bot[x].x < player2.x)
+			return 1;
+		break;
+	case 3:
+		if (bot[x].x + 48 > player1.x && bot[x].x - 48 < player1.x && bot[x].y < player1.y)
+			return 1;
+		if (bot[x].x + 48 > player2.x && bot[x].x - 48 < player2.x && bot[x].y < player2.y)
+			return 1;
+		break;
+	case 4:
+		if (bot[x].y + 48 > player1.y && bot[x].y - 48 < player1.y && bot[x].x > player1.x)
+			return 1;
+		if (bot[x].y + 48 > player2.y && bot[x].y - 48 < player2.y && bot[x].x > player2.x)
+			return 1;
+		break;
+	}
+	return 0;
+}
+
+bool checkBotReadyShoot(int x)
+{
+	if (timing.getElapsedTime() - botShootTiming[x] > botTimingDelay)
+	{
+		botShootTiming[x] = timing.getElapsedTime();
+		return 1;
+	}
+	return 0;
+
 }
 void botTank()
 {
+	
 	int i,k=0,j=0,countGoAway=0;
 	
 	for (i = 0; i < numberOFtank; i++)
@@ -808,14 +865,14 @@ void botTank()
 
 			switch (bot[i].dir)
 			{
-			case 1:bot[i].y -= 3; break;
-			case 2:bot[i].x += 3; break;
-			case 3:bot[i].y += 3; break;
-			case 4:bot[i].x -= 3; break;
+			case 1:bot[i].y -= 4; break;
+			case 2:bot[i].x += 4; break;
+			case 3:bot[i].y += 4; break;
+			case 4:bot[i].x -= 4; break;
 			}
-			botDist[i] -= 3;
+			botDist[i] -= 4;
 
-			if (rand() % 43 == 0 && bot[i].hp>0)
+			if (checkPlayerFrontBot(i) && checkBotReadyShoot(i) && bot[i].hp>0)
 			{	
 				bulle[countbullet].obj = botbullet;
 				bulle[countbullet].dir = bot[i].dir;
@@ -1133,6 +1190,7 @@ int main()
 	for (int i = 0; i < numberOFtank;i++)
 		spawn.Bot(i);
 	setHpMap();
+	
 	while (1)
 	{
 		
